@@ -1,0 +1,58 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+Scroll Real Estate
+{% endblock title %}
+
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='css/scroll.css') }}">
+{% endblock styles %}
+
+
+{% block content %}
+
+<div class="custom-content">
+    {% if debug %}
+    <div class="custom-debug">
+    {{ debug }}
+    </div>
+    {% endif %}
+
+    {# ---------------- Default page ------------------- #}
+
+    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+        {% for item in main_image %}
+        <div class="thumbnail">
+            <a href="{{ link[loop.index0].href }}">
+        <div class="grid-item"><img src="{{ item }}"></div>
+                </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block scripts %}
+{{ super() }}
+
+    <script src="{{url_for('.static', filename='js/salvatore.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/masonry.pkgd.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/imagesloaded.pkgd.js')}}"></script>
+
+
+    <script type="text/javascript">
+        var $grid = $('.grid').masonry({
+            itemSelector: '.grid-item',
+            columnWidth: '.grid-sizer',
+            percentPosition: true
+        });
+
+        $.grid.imagesLoaded().progress( function() {
+            $grid.masonry('layout');
+        })
+    </script>
+
+{% endblock scripts %}
