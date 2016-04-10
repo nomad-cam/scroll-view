@@ -1,13 +1,18 @@
 {% extends "bootstrap/base.html" %}
 
 {% block title %}
-Scroll Real Estate
+Scroll
 {% endblock title %}
 
 
 {% block styles %}
 {{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='css/bootstrap.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='css/bootstrap-theme.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='css/scroll.css') }}">
+
+<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
 {% endblock styles %}
 
 
@@ -22,15 +27,34 @@ Scroll Real Estate
 
     {# ---------------- Default page ------------------- #}
 
-    <div class="grid" data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }'>
+    <div class="grid" {# data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' #}>
+        <div class="grid-sizer">
+            {# ------------------- Page Title & configuration --------------------- #}
+            <div class="grid-item">
+                <div class="thumbnail page-menu">
+                    {# <img src="{{ url_for('.static', filename='img/Vintage_illustration_Vintage_Victorian_Floor_Plan.jpg') }}"> #}
+                    <div class="thumbnail-text-left" >
+                    Scroll through realestate.com.au<p>
+                    --------------------------------<br>
+                    <div class="text-legal">This site is not operated by, sponsored by, endorsed by, or affiliated with realestate.com.au in any way.
+                    All content shown is stored and provided by realestate.com.au, this is merely a fresh new interface to scroll through realestate.com.au</div>
+                    </div>
+                </div>
+            </div>
+            {# ------------------- End Page Title & configuration --------------------- #}
         {% for item in main_image %}
+        <div class="grid-item">
         <div class="thumbnail">
-            <a href="{{ link[loop.index0].href }}">
-        <div class="grid-item"><img src="{{ item }}"></div>
-                </a>
+            <a href="{{ link[loop.index0].href }}"><img src="{{ item }}"></a>
+            <div class="thumbnail-text-left">
+            {{ address[loop.index0].suburb }}, {{ address[loop.index0].state }}
+            </div>
+        </div>
+
         </div>
         {% endfor %}
     </div>
+        </div>
 
 </div>
 {% endblock content %}
@@ -38,19 +62,21 @@ Scroll Real Estate
 {% block scripts %}
 {{ super() }}
 
-    <script src="{{url_for('.static', filename='js/salvatore.js')}}"></script>
+    <!-- <script src="{{url_for('.static', filename='js/salvattore.js')}}"></script> -->
     <script src="{{url_for('.static', filename='js/masonry.pkgd.js')}}"></script>
     <script src="{{url_for('.static', filename='js/imagesloaded.pkgd.js')}}"></script>
+    <script src="{{url_for('.static', filename='js/bootstrap.js')}}"></script>
 
 
     <script type="text/javascript">
         var $grid = $('.grid').masonry({
             itemSelector: '.grid-item',
             columnWidth: '.grid-sizer',
-            percentPosition: true
+            percentPosition: true,
+            gutter: 10
         });
 
-        $.grid.imagesLoaded().progress( function() {
+        $grid.imagesLoaded().progress( function() {
             $grid.masonry('layout');
         })
     </script>

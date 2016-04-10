@@ -34,7 +34,7 @@ def scroll():
         app.logger.debug(link)
         #app.logger.debug(address)
         #app.logger.debug("complete...")
-        return render_template('index.html',main_image=mainImage,images=images,link=link,title=title,adress=address,debug=debug)
+        return render_template('index.html',main_image=mainImage,images=images,link=link,title=title,address=address,debug=debug)
 
 
 @app.errorhandler(404)

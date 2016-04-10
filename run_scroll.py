@@ -1,4 +1,4 @@
 from scroll import app
 
 app.debug = True #disable for production servers
-app.run(host="0.0.0.0", port=6600)
+app.run(host="127.0.0.1", port=6600)
