@@ -22,6 +22,9 @@ def scroll():
         link = []
         title = []
         address = []
+        price = []
+
+
 
         for i,item in enumerate(results_list):
             tmpStr = results_list[i]['mainImage']['server']+'/440x320'+results_list[i]['mainImage']['uri']+' '
@@ -30,11 +33,13 @@ def scroll():
             link.append(results_list[i]['_links']['short'])
             title.append(results_list[i]['title'])
             address.append(results_list[i]['address'])
+            price.append(results_list[i]['price'])
+            # app.logger.debug(item)
 
-        app.logger.debug(link)
-        #app.logger.debug(address)
-        #app.logger.debug("complete...")
-        return render_template('index.html',main_image=mainImage,images=images,link=link,title=title,address=address,debug=debug)
+        # app.logger.debug(results_list)
+        # app.logger.debug(address)
+        # app.logger.debug("complete...")
+        return render_template('index.html',main_image=mainImage,images=images,link=link,title=title,address=address,price=price,debug=debug)
 
 
 @app.errorhandler(404)
