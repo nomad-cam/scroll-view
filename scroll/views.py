@@ -33,8 +33,12 @@ def scroll():
             link.append(results_list[i]['_links']['short'])
             title.append(results_list[i]['title'])
             address.append(results_list[i]['address'])
-            price.append(results_list[i]['price'])
-            # app.logger.debug(item)
+            if "price" in results_list[i]:
+                price.append(results_list[i]['price'])
+            else:
+                na={"display": "N/A"}
+                price.append(na)
+            # app.logger.debug(price)
 
         # app.logger.debug(results_list)
         # app.logger.debug(address)

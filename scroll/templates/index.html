@@ -32,30 +32,75 @@ Scroll
             {# ------------------- Page Title & configuration --------------------- #}
             <div class="grid-item">
                 <div class="thumbnail page-menu">
-                    {# <img src="{{ url_for('.static', filename='img/Vintage_illustration_Vintage_Victorian_Floor_Plan.jpg') }}"> #}
-                    <div class="thumbnail-text-left" >
-                    Scroll through realestate.com.au<p>
-                    --------------------------------<br>
-                    <div class="text-legal">This site is not operated by, sponsored by, endorsed by, or affiliated with realestate.com.au in any way.
-                    All content shown is stored and provided by realestate.com.au, this is merely a fresh new interface to scroll through realestate.com.au</div>
+                    <div class="thumbnail-text" >
+                    <p>Scroll through realestate.com.au</p>
+                    <form action="#" class="form-horizontal" style="vertical-align: top">
+                        <div class="form-group form-group-sm">
+                            <label for="suburbName">Suburb</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="suburbName" placeholder="Suburb">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="stateName">State</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="stateName" placeholder="State">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="propertyType">Type</label>
+                            <div class="col-sm-10">
+                            <select  class="form-control" id="propertyType">
+                                <option value="all">All</option>
+                                <option value="house">House</option>
+                                <option value="unit_apartment">Unit Apartment</option>
+                                <option value="apartment">apartment</option>
+                                <option value="unit">Unit</option>
+                                <option value="townhouse">Townhouse</option>
+                                <option value="villa">Villa</option>
+                                <option value="land">Land</option>
+                                <option value="acreage">Acreage</option>
+                                <option value="rural">Rural</option>
+                            </select>
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="priceMin">Min $</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="priceMin" placeholder="Minimum Price">
+                            </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                            <label for="priceMax">Max $</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="priceMax" placeholder="Maximum Price">
+                            </div>
+                        </div>
+                    </form>
+                        <div style="display: table-cell; vertical-align: bottom">
+                            --------------------------------<br>
+                            <div class="text-legal">This site is not operated by, sponsored by, endorsed by, or affiliated with realestate.com.au in any way.
+                            All content shown is stored and provided by realestate.com.au, this is merely a fresh new interface to scroll through realestate.com.au</div>
+                        </div>
                     </div>
                 </div>
             </div>
             {# ------------------- End Page Title & configuration --------------------- #}
+        {#
         {% for item in main_image %}
         <div class="grid-item">
-        <div class="thumbnail">
-            <a href="{{ link[loop.index0].href }}"><img src="{{ item }}"></a>
-            <div class="thumbnail-text-left">
-            {{ address[loop.index0].suburb }}, {{ address[loop.index0].state }}
+            <div class="thumbnail">
+                <a href="{{ link[loop.index0].href }}"><img src="{{ item }}"></a>
+                <div class="thumbnail-text-left">
+                {{ address[loop.index0].suburb }}, {{ address[loop.index0].state }}
+                </div>
+                <div class="thumbnail-text-right">
+                {{  price[loop.index0].display }}
+                </div>
             </div>
-            <div class="thumbnail-text-right">
-            {{  price[loop.index0].display }}
-            </div>
-        </div>
-
         </div>
         {% endfor %}
+            #}
     </div>
         </div>
 
@@ -66,10 +111,11 @@ Scroll
 {{ super() }}
 
     <!-- <script src="{{url_for('.static', filename='js/salvattore.js')}}"></script> -->
+    <!-- <script src="{{url_for('.static', filename='js/scroll.js')}}"></script> -->
     <script src="{{url_for('.static', filename='js/masonry.pkgd.js')}}"></script>
     <script src="{{url_for('.static', filename='js/imagesloaded.pkgd.js')}}"></script>
     <script src="{{url_for('.static', filename='js/bootstrap.js')}}"></script>
-
+    <!-- <script src="{{url_for('.static', filename='js/jquery-1.12.3.min.js')}}"></script> -->
 
     <script type="text/javascript">
         var $grid = $('.grid').masonry({
@@ -81,7 +127,131 @@ Scroll
 
         $grid.imagesLoaded().progress( function() {
             $grid.masonry('layout');
-        })
+        });
+
+
+
+        function load(callback) {
+
+            var req; //= new XMLHttpRequest();
+
+            if (typeof XMLHttpRequest !== 'undefined') req = new XMLHttpRequest();
+            else {
+                var versions = ["Microsoft.XmlHttp",
+                    "MSXML2.XmlHttp",
+                    "MSXML2.XmlHttp.3.0",
+                    "MSXML2.XmlHttp.4.0",
+                    "MSXML2.XmlHttp.5.0"];
+
+                for (var i = 0; i < versions.length; i++ )
+                {
+                    try {
+                        req = new ActiveXObject(versions[i]);
+                        break;
+                    }
+                    catch (e) {
+                    }
+                } // end for
+            }
+
+            req.onreadystatechange = processCallback;
+
+            function processCallback() {
+                if (req.readyState < 4) {
+                    return; //Still processing request, wait for response
+                }
+
+                if (req.status !== 200) {
+                    return; //Non-successful page request ie. 404
+                }
+
+                if (req.readyState === 4 ) {
+                    //success... continue with processing callback
+                    //console.log(req.responseText);
+                    callback(req);
+                }
+            }
+
+
+            var req_url = 'http://services.realestate.com.au/services/listings/search';
+            //var req_url = "http://services.realestate.com.au/services/listings/search";
+
+            var property_data = JSON.stringify({
+                "channel":"buy",
+                "pageSize":"20"});
+            var query_data = "?query=" + property_data;
+            //alert(query_data);
+
+            req.open('GET', req_url+query_data, true);
+            //req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            req.send();
+
+        }
+
+        load( function (req) {
+            //console.log(req.responseText);
+            var response = JSON.parse(req.responseText);
+            var tiered_results = response.tieredResults[0];
+            var results = tiered_results.results;
+            //console.log(results);
+
+            var elems = [];
+            var fragment = document.createDocumentFragment();
+
+            for (let key in results) {
+                if (!results.hasOwnProperty(key)) { continue; }
+                console.log(results[key].price.display);
+
+                var imgStr = results[key].mainImage.server + "/440x320" + results[key].mainImage.uri +" ";
+
+                var insertStr = "<div class='grid-item'>" +
+                        "<div class='thumbnail'>" +
+                        "<a href='" + results[key]._links.short.href + "'><img src='" + imgStr + "'></a>"+
+                        "<div class='thumbnail-text-left'>" +
+                        results[key].address.suburb + ", " + results[key].address.state +
+                        "</div>" +
+                        "<div class='thumbnail-text-right'>" +
+                        results[key].price.display + "</div>" +
+                        "</div>" +
+                        "</div> ";
+
+                console.log(insertStr);
+
+                $("div.grid-sizer").append(insertStr);
+
+            }
+
+
+
+        });
+
+
+/*
+        $.ajax({
+            dataType: "json",
+            url: "http://services.realestate.com.au/services/listings/search",
+            data: {
+                query: {
+                    channel:'buy',
+                    pageSize:'20'
+                    }
+            },
+            success: success
+        });
+*/
+/*        $.getJSON( propertyAPI , function( data ) {
+            var items = [];
+            $.each( data, function( key, val ) {
+                items.push("<li id='" + key + "'>" + val + "</li>" );
+            });
+
+            $( "<ul/>", {
+                "class": "property-list",
+                html: items.join( "" )
+            }).append( "body" )
+        });
+*/
+
     </script>
 
 {% endblock scripts %}
