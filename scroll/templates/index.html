@@ -27,7 +27,7 @@ Scroll
 
     {# ---------------- Default page ------------------- #}
 
-    <div class="grid" {# data-masonry='{ "itemSelector": ".grid-item", "columnWidth": 200 }' #}>
+    <div class="grid">
         <div class="grid-sizer">
             {# ------------------- Page Title & configuration --------------------- #}
             <div class="grid-item">
@@ -195,62 +195,76 @@ Scroll
             var results = tiered_results.results;
             //console.log(results);
 
+            var grid = document.querySelector('.grid-sizer');
+            var msnry = Masonry.data( grid );
+
             var elems = [];
             var fragment = document.createDocumentFragment();
 
             for (let key in results) {
                 if (!results.hasOwnProperty(key)) { continue; }
-                console.log(results[key].price.display);
+                if ( "price" in results[key] ) {
+                    if ("display" in results[key].price) {
+                        //console.log(results[key].price.display);
+                        var display_price = results[key].price.display;
+                    } else {
+                        //console.log("No display Price");
+                        var display_price = "";
+                    }
+                }
 
                 var imgStr = results[key].mainImage.server + "/440x320" + results[key].mainImage.uri +" ";
+                var imgLnk = results[key]._links.short.href;
 
-                var insertStr = "<div class='grid-item'>" +
+                /*var insertStr = "<div class='grid-item'>" +
                         "<div class='thumbnail'>" +
-                        "<a href='" + results[key]._links.short.href + "'><img src='" + imgStr + "'></a>"+
+                        "<a href='" + imgLnk + "'><img src='" + imgStr + "'></a>"+
                         "<div class='thumbnail-text-left'>" +
                         results[key].address.suburb + ", " + results[key].address.state +
                         "</div>" +
                         "<div class='thumbnail-text-right'>" +
-                        results[key].price.display + "</div>" +
+                        display_price + "</div>" +
                         "</div>" +
-                        "</div> ";
+                        "</div> "; */
 
-                console.log(insertStr);
+                var div_grid_item = document.createElement("div");
+                        div_grid_item.className = "grid-item";
+                var div_thumbnail = document.createElement("div");
+                        div_thumbnail.className = "thumbnail";
+                var a_img = document.createElement("a");
+                        a_img.setAttribute("href", imgLnk);
+                var image = document.createElement("img");
+                        image.setAttribute("src", imgStr);
+                var div_left_text = document.createElement("div");
+                        div_left_text.className = "thumbnail-text-left";
+                var left_text = document.createTextNode(results[key].address.suburb + ", " + results[key].address.state);
+                var div_right_text = document.createElement("div");
+                        div_right_text.className = "thumbnail-text-right";
+                var right_text = document.createTextNode(display_price);
 
-                $("div.grid-sizer").append(insertStr);
+                div_left_text.appendChild(left_text);
+                div_right_text.appendChild(right_text);
+                a_img.appendChild(image);
+                div_thumbnail.appendChild(a_img);
+
+                div_grid_item.appendChild(div_thumbnail);
+                div_grid_item.appendChild(div_left_text);
+                div_grid_item.appendChild(div_right_text);
+
+                //console.log(div_grid_item);
+
+                fragment.appendChild(div_grid_item); // final assemble of fragment layout
+                elems.push(fragment);
+
+                //$("div.grid-sizer").append(insertStr);
 
             }
 
+            grid.appendChild( fragment ); // append fragment to container
+            msnry.appended( elems ); // insert and layout newly appended elements
 
 
         });
-
-
-/*
-        $.ajax({
-            dataType: "json",
-            url: "http://services.realestate.com.au/services/listings/search",
-            data: {
-                query: {
-                    channel:'buy',
-                    pageSize:'20'
-                    }
-            },
-            success: success
-        });
-*/
-/*        $.getJSON( propertyAPI , function( data ) {
-            var items = [];
-            $.each( data, function( key, val ) {
-                items.push("<li id='" + key + "'>" + val + "</li>" );
-            });
-
-            $( "<ul/>", {
-                "class": "property-list",
-                html: items.join( "" )
-            }).append( "body" )
-        });
-*/
 
     </script>
 
